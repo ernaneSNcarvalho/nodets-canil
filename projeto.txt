@@ -1,0 +1,113 @@
+1 - Criar o repositorio no GitHub com read-me e gitignore 
+	1.1 - npm i express e demais 
+2 - Clonar o repositorio para local e abrir com vscode 
+3 - npm init para criar o package.json
+4 - tsc --init para criar o arquivo de config do typescript
+5 - criar a pasta src e dentro o server.ts
+6 - criar o script no package.json => "start-dev": "nodemon -e ts, json, mustache src/server.ts"
+7 - no tsconfig.json desmarcar outdir, rootdir, moduleresolution e deixar es2016
+#### CRIANDO O SERVIDOR ####
+8 - NO SERVER.TS
+	import express from 'express';
+	import dotenv from 'dotenv';
+	import mustache from 'mustache-express';
+	import path from 'path';
+
+	dotenv.config();
+	
+	const server = express();
+
+	server.set('view engine', 'mustache');
+	server.set('views', path.join(__dirname, 'views'));
+	server.engine('mustache', mustache());
+
+	server.use(express.static(path.join(__dirname, '../public')));
+	
+	///Rotas
+
+	server.listen(process.env.PORT);
+9 - Criar uma pasta na raiz _html o css e imagens arrasta pra pasta public 
+
+***** CRIANDO ROTAS E CONTROLERS 
+
+10 - NO SRC - CRIAR UMA PASTA ROUTES - DENTRO INDEX.TS
+
+	10.1 - import {Router} from 'express';
+		
+		const router = Router();
+		
+		router.get('/', (req, res) => {
+			res.send('home');
+		});
+		
+		export default router;
+
+No server.ts =>
+	import mainRoutes from './routes/index';
+	
+	server.use(mainRoutes);
+	server.use((req, res) => {
+		res.send('Pagina nao encontrada');
+	});
+
+	**rodar o projeto pra testar 
+
+na pasta src => criar pasta controllers - models - views 
+
+	-> dentro de controller - pageController.ts e searchController.ts
+	-> No pageControler 
+		import {Request, Response } from 'express';
+	
+	
+		export const home = (req: Request, res: Response) => {
+			//res.render('pages/page');
+		}
+	
+
+No routes - index.ts 
+	import * as PageController from '../controllers/pageController';
+	import * as SearchController from '../controllers/searchController';
+
+	criar uma pagina dentro da pasta controllers 		
+		pageController
+		searchController
+
+Dentro de pageController 
+	import {Request, Response} from 'express';
+	
+	export const page = (req: Request, res: Response) => {
+		res.render('pages/page');
+	}
+
+
+	dentro de searchController
+	
+	import {Request, Response} from 'express';
+	
+	export const search = (req: Request, res: Response) => {
+		res.render('pages/search');
+	}
+
+Dentro da pasta routes - index 	
+	import * as PageController from '../controllers/pageController';
+	import * as SearchController from '../controllers/searchController';
+
+	const router = Router();
+
+	router.get('/', PageController.home);
+	router.get('/dogs', PageController.dogs);
+	router.get('/cats', PageController.cats);
+	router.get('/fishes', PageController.fishes);
+	router.get('/search', SearchController.search);
+
+Dentro de pageController 
+
+	Criar os os controladores de cada pagina 
+	
+	import {Request, Response} from 'express';
+	
+	export const home = (req: Request, res: Response) => {res.send('home')}
+	export const dogs = (req: Request, res: Response) => {}
+	export const cats = (req: Request, res: Response) => {}
+	export const fishes = (req: Request, res: Response) => {}
+	
